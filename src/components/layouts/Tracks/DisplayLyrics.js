@@ -6,11 +6,11 @@ class DiplayLyrics extends Component {
     state = { 
         lyrics: [],
         title: "",
-        status:""
+        status: "",
+        isLoading:true
     }
     
     componentDidMount() {
-
         axios.get(`https://canarado-lyrics.p.rapidapi.com/lyrics/${this.props.match.params.trackTitle}`, {
             "method": "GET",
             "headers": {
@@ -23,20 +23,22 @@ class DiplayLyrics extends Component {
                 this.setState({
                     lyrics: response.data.content[0].lyrics,
                     title: response.data.content[0].title,
+                    isLoading:false
                 })
 
             })
             .catch(err => {
                 this.setState({
-                    status:err
+                    status: err,
+                    isLoading:false
                 })
             });
     }
 
     render() { 
-        const { lyrics, title, status } = this.state;
+        const { lyrics, title, status,isLoading } = this.state;
            
-        if (title === undefined || lyrics === undefined ) {
+        if (title === undefined || lyrics === undefined || isLoading) {
             return <Spinner />
         }
         else if (status) {
@@ -58,6 +60,7 @@ class DiplayLyrics extends Component {
         else {
             return (
                 <React.Fragment>
+                    {console.log(status)}
                     <h3 className="text-center">{title}</h3>
                     <div className="card">                        
                         <div className = "card-body">{lyrics}</div>
